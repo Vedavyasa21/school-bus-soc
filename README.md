@@ -2,62 +2,77 @@
 
 **RISC-V Architecture Modeling, gem5 Hardware Profiling, and Multi-Seed Schedulability Study**
 
+[![Release](https://img.shields.io/badge/release-v1.0--paper-blue)](https://github.com/Vedavyasa21/school-bus-soc/releases/tag/v1.0-paper)
+
 ---
 
 ## Overview
 
-This repository contains the complete C controller model, gem5 RISC-V platform configuration, per-stage hardware profiler (`m5ops` + `rdcycle`), multi-seed/multi-load experiment harness, raw CSV logs, and figure/table generation scripts supporting the paper:
+This repository contains the complete C controller model, gem5 RISC-V platform configuration (`gem5 v25.1.0.1`), per-stage hardware profiler (`rdcycle`/`rdinstret` CSRs + gem5 `m5ops`), 100-seed / 13-load experiment harness, normalized fusion sensitivity benchmark, raw CSV logs, raw terminal execution evidence (`evidence/`), and publication figure/table generators supporting the paper:
 
 > *Safety-Aware Event Scheduling for a School Bus Pedestrian Protection Controller: A RISC-V/gem5 Simulation Study*
 
 ### Controller Pipeline (`src/`)
 
-1. **Sensor Input (`sensor_input.c/.h`)**: Generates seeded synthetic multi-sensor streams (ultrasonic 0–400 cm with 3% sensor dropout, short-range proximity 3–150 cm, motion level 0–100, door status, and bus speed) across six scenarios (`IDLE`, `APPROACH`, `CROSSING`, `STANDING`, `OBSTACLE`, `NOISE`).
-2. **Sensor Fusion (`sensor_fusion.c/.h`)**: Computes weighted confidence (`0.35 US + 0.25 PR + 0.40 MO`) with cross-sensor disagreement penalties and dual-sensor close-range confirmation (`both_close` within 200 cm) to detect stationary/crouching children.
-3. **Danger-Zone Classification (`danger_detection.c/.h`)**: Maps distance, confidence, door state, and vehicle speed to `SAFE`, `WARNING` ($\le 300\text{ cm}$), and `CRITICAL` zones using a stopping-distance model ($\tau = 0.4\text{ s}$ reaction, $a = 5.0\text{ m/s}^2$ deceleration).
-4. **Priority Scheduling (`priority_scheduler.c/.h` & `experiments_extra/sweep.c`)**: Evaluates `FIFO`, `FIXED-SENSOR`, `SAFETY-AWARE` (zone $\times 1000 + \text{risk}$ with safe-to-warning anti-starvation aging), `ZONE-FIFO` (zone then arrival), `EDF`, `P-ZONE-FIFO` (preemptive zone), and `P-EDF` (preemptive EDF).
-5. **Driver & V2X Warnings (`warning_system.c/.h`)**: Dispatches driver cabin alerts (`[INFO]`, `[CAUTION]`, `[DANGER]`) and V2V/C-V2X emergency safety messages.
-6. **Per-Stage gem5 Profiler (`profile_stages.c`)**: Isolates compute stages without console `printf` overhead using RISC-V `rdcycle`/`rdinstret` CSRs and gem5 `m5ops` (`libm5.a`).
+1. **Sensor Input (`sensor_input.c/.h`)**: Generates deterministic xorshift-seeded synthetic multi-sensor streams (ultrasonic `0–400 cm` with `3%` dropout, short-range proximity `3–150 cm`, motion `0–100`, door state, and vehicle speed `km/h`) across six scenarios (`IDLE 25%`, `APPROACH 25%`, `CROSSING 12%`, `STANDING 12%`, `OBSTACLE 14%`, `NOISE 12%`).
+2. **Sensor Fusion (`sensor_fusion.c/.h`)**: Computes a normalized weighted score `conf = (us_s*w_us + pr_s*w_pr + mo_s*w_mo) / (w_us + w_pr + w_mo)` (`35/25/40` baseline, clamped `[0, 100]`) with cross-sensor disagreement penalties and dual short-range confirmation (`both_close = us_echo && prox_echo && dist <= 200`) to detect stationary/crouching children.
+3. **Danger-Zone Classification (`danger_detection.c/.h`)**: Applies a `300 cm` warning threshold and integer kinematic stopping-distance critical threshold (`crit_cm = clamp(100 + d_stop(v), 150, 220)` cm when `door_open` or `bus_speed_kmh > 0`, with `tau = 0.4 s`, `a = 5.0 m/s^2`).
+4. **Priority Scheduling (`priority_scheduler.c/.h` & `experiments_extra/sweep.c`)**: Compares `FIFO`, `FIXED-SENSOR`, `SAFETY-AWARE` (`zone * 1000 + risk` with safe-to-warning aging at `250 ms`), `ZONE-FIFO`, `EDF`, `P-ZONE-FIFO`, and `P-EDF` under `3/6/9 ms` service times and `300/100/40 ms` deadlines.
+5. **Driver & V2X Warnings (`warning_system.c/.h`)**: Generates `[INFO]`, `[CAUTION]`, and `[DANGER]` cabin alerts and V2V text logs.
+6. **Per-Stage gem5 Profiler (`profile_stages.c`)**: Isolates each stage without console formatting distortion using RISC-V `rdcycle`/`rdinstret` CSRs and `m5_reset_stats`/`m5_dump_stats` (`libm5.a`).
 
 ---
 
-## Reproducing All Results
+## Requirements & gem5 RISC-V Build Setup
 
-### 1. Build & Run Case Study on gem5 (RISC-V SE Mode)
+- **Host OS**: Ubuntu / Linux (tested on Ubuntu 24.04/26.04 under WSL2)
+- **RISC-V Cross-Compiler**: `riscv64-linux-gnu-gcc` (`-march=rv64gc -mabi=lp64d -O2 -static`)
+- **gem5 Simulator**: `gem5 v25.1.0.1` built for `RISCV` (`build/RISCV/gem5.opt`) plus `util/m5/build/riscv/out/libm5.a` (`scons build/RISCV/gem5.opt -j$(nproc)`)
+- **Python Analysis Stack**: Python 3 (`numpy`, `pandas`, `scipy`, `matplotlib`)
 
-```bash
-# Nominal load (100%, seed 2024, verbose)
-python3 experiments/run_experiments.py --gem5 ~/gem5/build/RISCV/gem5.opt --demo
+---
 
-# 400% overload case study on gem5 (RiscvTimingSimpleCPU)
-~/gem5/build/RISCV/gem5.opt --outdir=experiments/results/demo_stress \
-    configs/school_bus_soc.py --binary build/school_bus_soc \
-    --args "40 2024 0 400" --cpu-type timing
-```
-
-### 2. Per-Stage Hardware Cycle Profiling on gem5 (`RiscvTimingSimpleCPU` & `RiscvMinorCPU`)
+## Single-Command Reproduction
 
 ```bash
-make prof
-~/gem5/build/RISCV/gem5.opt --outdir=experiments/results/prof_timing \
-    configs/school_bus_soc.py --binary build/school_bus_soc_prof \
-    --args "40 2024" --cpu-type timing
+# 1) Run 100-seed / 13-load sweep, normalized fusion sensitivity, Holm tests, and all paper figures
+cd experiments_extra && bash run_all.sh && cd ..
 
-~/gem5/build/RISCV/gem5.opt --outdir=experiments/results/prof_minor \
-    configs/school_bus_soc.py --binary build/school_bus_soc_prof \
-    --args "40 2024" --cpu-type minor
+# 2) Run gem5 RISC-V SE case studies (verbose 100%, quiet 100%, quiet 400%) and per-stage m5ops/rdcycle profiling
+python3 experiments/run_experiments.py --gem5 ~/gem5/build/RISCV/gem5.opt --demo && \
+  ~/gem5/build/RISCV/gem5.opt --outdir=experiments/results/demo_quiet100 configs/school_bus_soc.py --binary build/school_bus_soc --args "40 2024 0 100" --cpu-type timing && \
+  ~/gem5/build/RISCV/gem5.opt --outdir=experiments/results/demo_stress   configs/school_bus_soc.py --binary build/school_bus_soc --args "40 2024 0 400" --cpu-type timing && \
+  make gem5-prof && \
+  ~/gem5/build/RISCV/gem5.opt --outdir=experiments/results/prof_minor    configs/school_bus_soc.py --binary build/school_bus_soc_prof --args "40 2024" --cpu-type minor
 ```
 
-### 3. Run 100-Seed Sweep, Feasibility, Sensitivity & Regenerate CSVs/Figures
+---
 
-```bash
-cd experiments_extra
-bash run_all.sh
+## Paper-to-Artifact Mapping
+
+| Paper Artifact | Generator / Source | Raw Data / Archived Evidence |
+|---|---|---|
+| **Tables 1–8** | Static model parameters (`src/*.h`, `configs/school_bus_soc.py`) | `src/sensor_input.h`, `sensor_fusion.h`, `danger_detection.h`, `priority_scheduler.h` |
+| **Table 9 & Fig. 5** | `experiments_extra/dump.c`, `make_figures3.py` | `experiments_extra/results/det.csv`, `frames.csv`, `seed2024.csv`, `evidence/` |
+| **Table 10 (Sensitivity)** | `experiments_extra/sensitivity.c` | `experiments_extra/results/sensitivity.csv` |
+| **Fig. 6 (Seed 2024 Conf.)** | `experiments_extra/make_figures3.py` | `experiments_extra/results/seed2024.csv` |
+| **Tables 11–12 & Figs. 7–8** | `experiments_extra/sweep.c`, `make_tables.py`, `make_figures3.py` | `experiments_extra/results/sweep.csv`, `tables.json`, `demo_timing/stats.txt` |
+| **Tables 13–16 & Figs. 9–10** | `experiments_extra/sweep.c`, `analyze.py`, `calc_stats.py`, `make_tables.py` | `experiments_extra/results/sweep.csv`, `summary.csv`, `analysis_printout.txt` |
+| **Table 17 (Full-run gem5)** | `src/main.c`, `configs/school_bus_soc.py` | `experiments/results/{demo_timing,demo_quiet100,demo_stress}/stats.txt` |
+| **Table 18 & Fig. 11** | `src/profile_stages.c`, `make_figures3.py` | `experiments/results/{prof_timing,prof_minor}/stats.txt`, `evidence/` |
+
+Raw unedited terminal captures of the RISC-V gem5 runs and deterministic MD5 verification outputs are preserved in [`evidence/`](evidence/).
+
+---
+
+## Deterministic Output Checksums (`run_all.sh`)
+
+```text
+3ec3f0abeb386a57ebd6124c14b09af2  experiments_extra/results/sweep.csv
+1035cad44bb9817ba1fa4be1132b7776  experiments_extra/results/det.csv
+8b3423de1de73f176aa1136219edaa2f  experiments_extra/results/sensitivity.csv
 ```
 
-This generates:
-- `experiments_extra/results/sweep.csv` (100 seeds × 13 loads × 7 policies + seed 2024)
-- `experiments_extra/results/det.csv` & `frames.csv` (4,000 labeled frames)
-- `experiments_extra/results/sensitivity.csv` (±20% fusion weight & stationary-rule ablation)
-- `experiments_extra/results/analysis_printout.txt` & `tables.json`
-- Publication-quality plots in `figures/*.png`
+## License
+
+Released under the [MIT License](LICENSE).
