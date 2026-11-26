@@ -1,0 +1,8 @@
+build/
+*.o
+*.a
+__pycache__/
+.venv/
+experiments/results/*/m5out/
+*.tmp
+.DS_Store
