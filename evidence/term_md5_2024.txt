@@ -1,0 +1,4 @@
+vedavyasa@Beast:~/school_bus_soc/experiments_extra$ md5sum results/sweep.csv results/det.csv results/sensitivity.csv
+c81e9b5057819dd02f97f3300ffcde55  results/sweep.csv
+1035cad44bb9817ba1fa4be1132b7776  results/det.csv
+8b3423de1de73f176aa1136219edaa2f  results/sensitivity.csv

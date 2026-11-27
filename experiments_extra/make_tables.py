@@ -42,7 +42,7 @@ for key, L in [('t_zone400', 400), ('t_zone100', 100)]:
 
 pe = d[d.policy == 'P-EDF'].copy()
 pe['anym'] = pe.crit_miss + pe.warn_miss + pe.safe_miss
-rows = [['Load', 'Offered load', 'Seeds feasible', 'Seeds with no critical miss']]
+rows = [['Load', 'Offered load', 'Seeds feasible (P-EDF)', 'Seeds with no critical miss (P-EDF)']]
 for L in sorted(d.load.unique()):
     g = pe[pe.load == L]
     rows.append(['%d %%' % L, '%.2f' % g.rho.mean(), '%d / 100' % (g.anym == 0).sum(), '%d / 100' % (g.crit_miss == 0).sum()])

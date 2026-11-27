@@ -1,0 +1,48 @@
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/arch/riscv/isa.cc:321: info: RVV enabled, VLEN = 256 bits, ELEN = 64 bits
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.1.0.1
+gem5 compiled Nov 22 2026 07:57:15
+gem5 started Nov 27 2026 08:27:01
+gem5 executing on Beast, pid 430
+command line: /home/vedavyasa/gem5/build/RISCV/gem5.opt --outdir=experiments/results/prof_timing configs/school_bus_soc.py --binary build/school_bus_soc_prof --args '40 2024' --cpu-type timing
+
+info: Standard input is not a terminal, disabling listeners.
+==================================================================
+ Smart School Bus Safety and Priority Management SoC Simulation
+ Architecture : RISCV
+ CPU Model    : timing (RiscvTimingSimpleCPU)
+ Clock        : 1GHz
+ Memory       : 512MiB (DDR3_1600_8x8)
+ Caches       : L1I=32KiB, L1D=32KiB, L2=256KiB
+ Binary       : /home/vedavyasa/school_bus_soc/build/school_bus_soc_prof
+ Arguments    : 40 2024
+==================================================================
+Starting gem5 simulation...
+src/sim/syscall_emul.cc:97: warn: ignoring syscall set_robust_list(...)
+      (further warnings will be suppressed)
+src/sim/syscall_emul.cc:108: warn: ignoring syscall rseq(...) returning -ENOSYS
+src/sim/syscall_emul.hh:1127: warn: readlink() called on '/proc/self/exe' may yield unexpected results in various settings.
+      Returning '/home/vedavyasa/school_bus_soc/build/school_bus_soc_prof'
+src/sim/mem_state.cc:443: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
+======================================================================
+ gem5 Per-Stage Compute Profile (n=40, seed=2024, 1 GHz ref clock)
+======================================================================
+Stage                Cycles      Insts    Cyc/Evt   Time(us)      IPC
+SensorInput           19180       6607      479.5     19.180    0.344
+SensorFusion          11017       3735      275.4     11.017    0.339
+DangerDetect          18682       4489      467.1     18.682    0.240
+FIFO                  67570      20752     1689.2     67.570    0.307
+FIXED-PRIORITY        60749      20776     1518.7     60.749    0.342
+SAFETY-AWARE          61528      21287     1538.2     61.528    0.346
+WarningGen           214805      58826     5370.1    214.805    0.274
+----------------------------------------------------------------------
+TOTAL_COMPUTE        453531     136472    11338.3    453.531    0.301
+Exiting @ tick 1197563000 because exiting with last active thread context

@@ -1,0 +1,54 @@
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/arch/riscv/isa.cc:321: info: RVV enabled, VLEN = 256 bits, ELEN = 64 bits
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/cpu/minor/execute.cc:164: warn: No functional unit for OpClass SimdUnitStrideSegmentedLoad
+src/cpu/minor/execute.cc:164: warn: No functional unit for OpClass SimdUnitStrideSegmentedStore
+src/cpu/minor/execute.cc:164: warn: No functional unit for OpClass SimdUnitStrideSegmentedFaultOnlyFirstLoad
+src/cpu/minor/execute.cc:164: warn: No functional unit for OpClass SimdStrideSegmentedLoad
+src/cpu/minor/execute.cc:164: warn: No functional unit for OpClass SimdStrideSegmentedStore
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.1.0.1
+gem5 compiled Nov 22 2026 07:57:15
+gem5 started Nov 27 2026 08:27:02
+gem5 executing on Beast, pid 434
+command line: /home/vedavyasa/gem5/build/RISCV/gem5.opt --outdir=experiments/results/prof_minor configs/school_bus_soc.py --binary build/school_bus_soc_prof --args '40 2024' --cpu-type minor
+
+info: Standard input is not a terminal, disabling listeners.
+==================================================================
+ Smart School Bus Safety and Priority Management SoC Simulation
+ Architecture : RISCV
+ CPU Model    : minor (RiscvMinorCPU)
+ Clock        : 1GHz
+ Memory       : 512MiB (DDR3_1600_8x8)
+ Caches       : L1I=32KiB, L1D=32KiB, L2=256KiB
+ Binary       : /home/vedavyasa/school_bus_soc/build/school_bus_soc_prof
+ Arguments    : 40 2024
+==================================================================
+Starting gem5 simulation...
+src/sim/syscall_emul.cc:97: warn: ignoring syscall set_robust_list(...)
+      (further warnings will be suppressed)
+src/sim/syscall_emul.cc:108: warn: ignoring syscall rseq(...) returning -ENOSYS
+src/sim/syscall_emul.hh:1127: warn: readlink() called on '/proc/self/exe' may yield unexpected results in various settings.
+      Returning '/home/vedavyasa/school_bus_soc/build/school_bus_soc_prof'
+src/sim/mem_state.cc:443: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
+======================================================================
+ gem5 Per-Stage Compute Profile (n=40, seed=2024, 1 GHz ref clock)
+======================================================================
+Stage                Cycles      Insts    Cyc/Evt   Time(us)      IPC
+SensorInput            6424       6607      160.6      6.424    1.028
+SensorFusion           4665       3735      116.6      4.665    0.801
+DangerDetect           8431       4489      210.8      8.431    0.532
+FIFO                  40733      20752     1018.3     40.733    0.509
+FIXED-PRIORITY        35339      20776      883.5     35.339    0.588
+SAFETY-AWARE          35362      21287      884.0     35.362    0.602
+WarningGen            91985      58826     2299.6     91.985    0.640
+----------------------------------------------------------------------
+TOTAL_COMPUTE        222939     136472     5573.5    222.939    0.612
+Exiting @ tick 608526000 because exiting with last active thread context

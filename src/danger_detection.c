@@ -31,9 +31,9 @@ void danger_classify(const SensorFrame *f, const FusionResult *r, DangerResult *
     speed = (f->bus_speed_kmh > 20) ? 20 : (int)f->bus_speed_kmh;
     risk += speed / 2;
 
-    /* Stopping-distance critical bound: tau = 0.4 s reaction + a = 5.0 m/s^2 braking */
+    /* Stopping-distance critical bound: tau = 0.4 s reaction + a = 5.0 m/s^2 braking (500 cm/s^2) */
     v_cms     = ((int)f->bus_speed_kmh * 1000) / 36;
-    d_stop_cm = (v_cms * 4) / 10 + (v_cms * v_cms) / 100000;
+    d_stop_cm = (v_cms * 4) / 10 + (v_cms * v_cms) / 1000;
     crit_cm   = CRITICAL_BASE_CM;
     if (f->door_open || f->bus_speed_kmh > 0) {
         crit_cm = CRITICAL_BASE_CM + d_stop_cm;

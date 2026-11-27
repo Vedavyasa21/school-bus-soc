@@ -1,0 +1,293 @@
+Global frequency set at 1000000000000 ticks per second
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/arch/riscv/isa.cc:321: info: RVV enabled, VLEN = 256 bits, ELEN = 64 bits
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.1.0.1
+gem5 compiled Nov 22 2026 07:57:15
+gem5 started Nov 27 2026 08:26:55
+gem5 executing on Beast, pid 405
+command line: /home/vedavyasa/gem5/build/RISCV/gem5.opt --outdir=experiments/results/demo_timing configs/school_bus_soc.py --binary build/school_bus_soc --args '40 2024 1 100' --cpu-type timing
+
+info: Standard input is not a terminal, disabling listeners.
+==================================================================
+ Smart School Bus Safety and Priority Management SoC Simulation
+ Architecture : RISCV
+ CPU Model    : timing (RiscvTimingSimpleCPU)
+ Clock        : 1GHz
+ Memory       : 512MiB (DDR3_1600_8x8)
+ Caches       : L1I=32KiB, L1D=32KiB, L2=256KiB
+ Binary       : /home/vedavyasa/school_bus_soc/build/school_bus_soc
+ Arguments    : 40 2024 1 100
+==================================================================
+Starting gem5 simulation...
+src/sim/syscall_emul.cc:97: warn: ignoring syscall set_robust_list(...)
+      (further warnings will be suppressed)
+src/sim/syscall_emul.cc:108: warn: ignoring syscall rseq(...) returning -ENOSYS
+src/sim/syscall_emul.hh:1127: warn: readlink() called on '/proc/self/exe' may yield unexpected results in various settings.
+      Returning '/home/vedavyasa/school_bus_soc/build/school_bus_soc'
+src/sim/mem_state.cc:443: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
+==============================================================
+ Smart School Bus Safety and Priority Management SoC (RISC-V)
+==============================================================
+ events=40  seed=2024  verbose=1
+
+---- STAGE 1: SENSOR INPUT, FUSION AND DANGER-ZONE DETECTION ----
+ ID   T(ms) |  US  PR  MO | SCENE    | CONF DET TRU  DIST | ZONE     RISK | SRC
+  0       5 | 170 150  57 | CROSSING |  45  YES YES  170 | CRITICAL   70 | ULTRA
+  1       9 | 185 150  87 | CROSSING |  58  YES YES  185 | CRITICAL   70 | MOTION
+  2      14 | 168 150  94 | CROSSING |  63  YES YES  168 | CRITICAL   70 | MOTION
+  3      22 | 147 141  61 | CROSSING |  63  YES YES  143 | CRITICAL   70 | ULTRA
+  4      26 | 166 150  88 | CROSSING |  60  YES YES  166 | CRITICAL   70 | MOTION
+  5      32 | 155 150  99 | CROSSING |  66  YES YES  155 | CRITICAL   70 | MOTION
+  6      38 | 164 150 100 | CROSSING |  66  YES YES  164 | CRITICAL   70 | MOTION
+  7      44 | 191 150  79 | CROSSING |  54  YES YES  191 | CRITICAL   70 | ULTRA
+  8      58 | 400 150   1 | IDLE     |   0  no  no   400 | SAFE        0 | ROUTINE
+  9      64 | 400 150   1 | IDLE     |   0  no  no   400 | SAFE        0 | ROUTINE
+ 10      77 | 400 150   4 | IDLE     |   0  no  no   400 | SAFE        0 | ROUTINE
+ 11      82 | 255 150  72 | APPROACH |  48  YES YES  255 | WARNING    35 | MOTION
+ 12      89 | 205 150  77 | APPROACH |  53  YES YES  205 | WARNING    40 | ULTRA
+ 13      98 | 158 150  78 | APPROACH |  55  YES YES  158 | WARNING    48 | ULTRA
+ 14     105 | 109 110  85 | APPROACH |  79  YES YES  109 | CRITICAL   70 | ULTRA
+ 15     113 |  61  60  94 | APPROACH |  89  YES YES   60 | CRITICAL   70 | MOTION
+ 16     122 |  31  25  89 | APPROACH |  91  YES YES   27 | CRITICAL   74 | ULTRA
+ 17     127 |  30  24 100 | APPROACH |  97  YES YES   26 | CRITICAL   76 | MOTION
+ 18     137 | 400 150  60 | NOISE    |  20  no  no   400 | SAFE        5 | MOTION
+ 19     151 |  56 150  65 | NOISE    |  34  no  no    56 | SAFE        8 | ULTRA
+ 20     158 |  71 150  81 | NOISE    |  41  YES no    71 | CRITICAL   70 | ULTRA
+ 21     164 | 191 150  77 | CROSSING |  53  YES YES  191 | CRITICAL   70 | ULTRA
+ 22     172 | 177 150  79 | CROSSING |  55  YES YES  177 | CRITICAL   70 | ULTRA
+ 23     177 | 160 150  92 | CROSSING |  62  YES YES  160 | CRITICAL   70 | MOTION
+ 24     184 | 167 150  97 | CROSSING |  65  YES YES  167 | CRITICAL   70 | MOTION
+ 25     188 | 142 144  78 | CROSSING |  72  YES YES  143 | CRITICAL   70 | ULTRA
+ 26     193 | 166 150  99 | CROSSING |  65  YES YES  166 | CRITICAL   70 | MOTION
+ 27     199 | 322 150  63 | APPROACH |  40  YES no   322 | SAFE       23 | ULTRA
+ 28     203 | 285 150  59 | APPROACH |  39  no  YES  285 | SAFE        9 | ULTRA
+ 29     211 | 253 150  71 | APPROACH |  47  YES YES  253 | WARNING    35 | ULTRA
+ 30     218 | 214 150  64 | APPROACH |  46  YES YES  214 | CRITICAL   70 | ULTRA
+ 31     223 | 181 150  67 | APPROACH |  49  YES YES  181 | CRITICAL   70 | ULTRA
+ 32     232 | 138 140  81 | APPROACH |  73  YES YES  139 | CRITICAL   70 | ULTRA
+ 33     244 | 400 150   6 | IDLE     |   0  no  no   400 | SAFE        0 | ROUTINE
+ 34     255 | 400 150  10 | IDLE     |   0  no  no   400 | SAFE        0 | ROUTINE
+ 35     266 | 400 150   8 | IDLE     |   0  no  no   400 | SAFE        0 | ROUTINE
+ 36     273 | 316 150  54 | APPROACH |  35  no  no   316 | SAFE        8 | ULTRA
+ 37     279 | 280 150  55 | APPROACH |  38  no  YES  280 | SAFE        9 | ULTRA
+ 38     283 | 250 150  69 | APPROACH |  46  YES YES  250 | WARNING    42 | ULTRA
+ 39     290 | 228 150  68 | APPROACH |  47  YES YES  228 | WARNING    45 | ULTRA
+
+Detection summary: TP=27 FP=2 FN=2 TN=9
+Zone summary     : SAFE=12 WARNING=6 CRITICAL=22
+
+---- STAGE 2: SCHEDULING, PRIORITY DECISIONS AND WARNINGS ----
+
+>>> Policy: FIFO
+ POS  ID  ZONE     SRC     PRIO  ARR START   FIN   LAT  DEADLINE
+   0   0  CRITICAL ULTRA      -      5     5    14     9  MET
+   1   1  CRITICAL MOTION     -      9    14    23    14  MET
+   2   2  CRITICAL MOTION     -     14    23    32    18  MET
+   3   3  CRITICAL ULTRA      -     22    32    41    19  MET
+   4   4  CRITICAL MOTION     -     26    41    50    24  MET
+   5   5  CRITICAL MOTION     -     32    50    59    27  MET
+   6   6  CRITICAL MOTION     -     38    59    68    30  MET
+   7   7  CRITICAL ULTRA      -     44    68    77    33  MET
+   8   8  SAFE     ROUTINE    -     58    77    80    22  MET
+   9   9  SAFE     ROUTINE    -     64    80    83    19  MET
+  10  10  SAFE     ROUTINE    -     77    83    86     9  MET
+  11  11  WARNING  MOTION     -     82    86    92    10  MET
+  12  12  WARNING  ULTRA      -     89    92    98     9  MET
+  13  13  WARNING  ULTRA      -     98    98   104     6  MET
+  14  14  CRITICAL ULTRA      -    105   105   114     9  MET
+  15  15  CRITICAL MOTION     -    113   114   123    10  MET
+  16  16  CRITICAL ULTRA      -    122   123   132    10  MET
+  17  17  CRITICAL MOTION     -    127   132   141    14  MET
+  18  18  SAFE     MOTION     -    137   141   144     7  MET
+  19  19  SAFE     ULTRA      -    151   151   154     3  MET
+  20  20  CRITICAL ULTRA      -    158   158   167     9  MET
+  21  21  CRITICAL ULTRA      -    164   167   176    12  MET
+  22  22  CRITICAL ULTRA      -    172   176   185    13  MET
+  23  23  CRITICAL MOTION     -    177   185   194    17  MET
+  24  24  CRITICAL MOTION     -    184   194   203    19  MET
+  25  25  CRITICAL ULTRA      -    188   203   212    24  MET
+  26  26  CRITICAL MOTION     -    193   212   221    28  MET
+  27  27  SAFE     ULTRA      -    199   221   224    25  MET
+  28  28  SAFE     ULTRA      -    203   224   227    24  MET
+  29  29  WARNING  ULTRA      -    211   227   233    22  MET
+  30  30  CRITICAL ULTRA      -    218   233   242    24  MET
+  31  31  CRITICAL ULTRA      -    223   242   251    28  MET
+  32  32  CRITICAL ULTRA      -    232   251   260    28  MET
+  33  33  SAFE     ROUTINE    -    244   260   263    19  MET
+  34  34  SAFE     ROUTINE    -    255   263   266    11  MET
+  35  35  SAFE     ROUTINE    -    266   266   269     3  MET
+  36  36  SAFE     ULTRA      -    273   273   276     3  MET
+  37  37  SAFE     ULTRA      -    279   279   282     3  MET
+  38  38  WARNING  ULTRA      -    283   283   289     6  MET
+  39  39  WARNING  ULTRA      -    290   290   296     6  MET
+[LOG FIFO] records=40 | driver alerts: info=12 caution=6 danger=22 | V2V broadcasts=28 | deadlines met=40 missed=0 | avg latency=15.65 ms
+
+>>> Policy: FIXED-PRIORITY
+ POS  ID  ZONE     SRC     PRIO  ARR START   FIN   LAT  DEADLINE
+   0   0  CRITICAL ULTRA      9      5     5    14     9  MET
+   1   1  CRITICAL MOTION     8      9    14    23    14  MET
+   2   3  CRITICAL ULTRA      9     22    23    32    10  MET
+   3   2  CRITICAL MOTION     8     14    32    41    27  MET
+   4   4  CRITICAL MOTION     8     26    41    50    24  MET
+   5   7  CRITICAL ULTRA      9     44    50    59    15  MET
+   6   5  CRITICAL MOTION     8     32    59    68    36  MET
+   7   6  CRITICAL MOTION     8     38    68    77    39  MET
+   8   8  SAFE     ROUTINE    7     58    77    80    22  MET
+   9   9  SAFE     ROUTINE    7     64    80    83    19  MET
+  10  11  WARNING  MOTION     8     82    83    89     7  MET
+  11  12  WARNING  ULTRA      9     89    89    95     6  MET
+  12  10  SAFE     ROUTINE    7     77    95    98    21  MET
+  13  13  WARNING  ULTRA      9     98    98   104     6  MET
+  14  14  CRITICAL ULTRA      9    105   105   114     9  MET
+  15  15  CRITICAL MOTION     8    113   114   123    10  MET
+  16  16  CRITICAL ULTRA      9    122   123   132    10  MET
+  17  17  CRITICAL MOTION     8    127   132   141    14  MET
+  18  18  SAFE     MOTION     8    137   141   144     7  MET
+  19  19  SAFE     ULTRA      9    151   151   154     3  MET
+  20  20  CRITICAL ULTRA      9    158   158   167     9  MET
+  21  21  CRITICAL ULTRA      9    164   167   176    12  MET
+  22  22  CRITICAL ULTRA      9    172   176   185    13  MET
+  23  23  CRITICAL MOTION     8    177   185   194    17  MET
+  24  25  CRITICAL ULTRA      9    188   194   203    15  MET
+  25  27  SAFE     ULTRA      9    199   203   206     7  MET
+  26  28  SAFE     ULTRA      9    203   206   209     6  MET
+  27  24  CRITICAL MOTION     8    184   209   218    34  MET
+  28  29  WARNING  ULTRA      9    211   218   224    13  MET
+  29  30  CRITICAL ULTRA      9    218   224   233    15  MET
+  30  31  CRITICAL ULTRA      9    223   233   242    19  MET
+  31  32  CRITICAL ULTRA      9    232   242   251    19  MET
+  32  26  CRITICAL MOTION     8    193   251   260    67  MISSED
+  33  33  SAFE     ROUTINE    7    244   260   263    19  MET
+  34  34  SAFE     ROUTINE    7    255   263   266    11  MET
+  35  35  SAFE     ROUTINE    7    266   266   269     3  MET
+  36  36  SAFE     ULTRA      9    273   273   276     3  MET
+  37  37  SAFE     ULTRA      9    279   279   282     3  MET
+  38  38  WARNING  ULTRA      9    283   283   289     6  MET
+  39  39  WARNING  ULTRA      9    290   290   296     6  MET
+[LOG FIXED-PRIORITY] records=40 | driver alerts: info=12 caution=6 danger=22 | V2V broadcasts=28 | deadlines met=39 missed=1 | avg latency=15.12 ms
+
+>>> Policy: SAFETY-AWARE
+ POS  ID  ZONE     SRC     PRIO  ARR START   FIN   LAT  DEADLINE
+   0   0  CRITICAL ULTRA   2070      5     5    14     9  MET
+   1   1  CRITICAL MOTION  2070      9    14    23    14  MET
+   2   2  CRITICAL MOTION  2070     14    23    32    18  MET
+   3   3  CRITICAL ULTRA   2070     22    32    41    19  MET
+   4   4  CRITICAL MOTION  2070     26    41    50    24  MET
+   5   5  CRITICAL MOTION  2070     32    50    59    27  MET
+   6   6  CRITICAL MOTION  2070     38    59    68    30  MET
+   7   7  CRITICAL ULTRA   2070     44    68    77    33  MET
+   8   8  SAFE     ROUTINE    0     58    77    80    22  MET
+   9   9  SAFE     ROUTINE    0     64    80    83    19  MET
+  10  11  WARNING  MOTION  1035     82    83    89     7  MET
+  11  12  WARNING  ULTRA   1040     89    89    95     6  MET
+  12  10  SAFE     ROUTINE    0     77    95    98    21  MET
+  13  13  WARNING  ULTRA   1048     98    98   104     6  MET
+  14  14  CRITICAL ULTRA   2070    105   105   114     9  MET
+  15  15  CRITICAL MOTION  2070    113   114   123    10  MET
+  16  16  CRITICAL ULTRA   2074    122   123   132    10  MET
+  17  17  CRITICAL MOTION  2076    127   132   141    14  MET
+  18  18  SAFE     MOTION     5    137   141   144     7  MET
+  19  19  SAFE     ULTRA      8    151   151   154     3  MET
+  20  20  CRITICAL ULTRA   2070    158   158   167     9  MET
+  21  21  CRITICAL ULTRA   2070    164   167   176    12  MET
+  22  22  CRITICAL ULTRA   2070    172   176   185    13  MET
+  23  23  CRITICAL MOTION  2070    177   185   194    17  MET
+  24  24  CRITICAL MOTION  2070    184   194   203    19  MET
+  25  25  CRITICAL ULTRA   2070    188   203   212    24  MET
+  26  26  CRITICAL MOTION  2070    193   212   221    28  MET
+  27  30  CRITICAL ULTRA   2070    218   221   230    12  MET
+  28  31  CRITICAL ULTRA   2070    223   230   239    16  MET
+  29  32  CRITICAL ULTRA   2070    232   239   248    16  MET
+  30  29  WARNING  ULTRA   1035    211   248   254    43  MET
+  31  27  SAFE     ULTRA     23    199   254   257    58  MET
+  32  28  SAFE     ULTRA      9    203   257   260    57  MET
+  33  33  SAFE     ROUTINE    0    244   260   263    19  MET
+  34  34  SAFE     ROUTINE    0    255   263   266    11  MET
+  35  35  SAFE     ROUTINE    0    266   266   269     3  MET
+  36  36  SAFE     ULTRA      8    273   273   276     3  MET
+  37  37  SAFE     ULTRA      9    279   279   282     3  MET
+  38  38  WARNING  ULTRA   1042    283   283   289     6  MET
+  39  39  WARNING  ULTRA   1045    290   290   296     6  MET
+
+  Warnings dispatched (safety-aware order, non-safe events):
+  t=  14 ms  EVT 0   [DANGER] STOP! Child in critical zone at 170 cm (conf 45%, risk 70). Do not move the bus!
+             EVT 0   [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 0.
+  t=  23 ms  EVT 1   [DANGER] STOP! Child in critical zone at 185 cm (conf 58%, risk 70). Do not move the bus!
+             EVT 1   [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 1.
+  t=  32 ms  EVT 2   [DANGER] STOP! Child in critical zone at 168 cm (conf 63%, risk 70). Do not move the bus!
+             EVT 2   [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 2.
+  t=  41 ms  EVT 3   [DANGER] STOP! Child in critical zone at 143 cm (conf 63%, risk 70). Do not move the bus!
+             EVT 3   [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 3.
+  t=  50 ms  EVT 4   [DANGER] STOP! Child in critical zone at 166 cm (conf 60%, risk 70). Do not move the bus!
+             EVT 4   [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 4.
+  t=  59 ms  EVT 5   [DANGER] STOP! Child in critical zone at 155 cm (conf 66%, risk 70). Do not move the bus!
+             EVT 5   [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 5.
+  t=  68 ms  EVT 6   [DANGER] STOP! Child in critical zone at 164 cm (conf 66%, risk 70). Do not move the bus!
+             EVT 6   [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 6.
+  t=  77 ms  EVT 7   [DANGER] STOP! Child in critical zone at 191 cm (conf 54%, risk 70). Do not move the bus!
+             EVT 7   [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 7.
+  t=  89 ms  EVT 11  [CAUTION] Child detected 255 cm from bus (conf 48%, risk 35). Reduce speed, prepare to stop.
+             EVT 11  [V2V-WARNING] School bus ahead: children near roadway. Slow down, keep distance.
+  t=  95 ms  EVT 12  [CAUTION] Child detected 205 cm from bus (conf 53%, risk 40). Reduce speed, prepare to stop.
+             EVT 12  [V2V-WARNING] School bus ahead: children near roadway. Slow down, keep distance.
+  t= 104 ms  EVT 13  [CAUTION] Child detected 158 cm from bus (conf 55%, risk 48). Reduce speed, prepare to stop.
+             EVT 13  [V2V-WARNING] School bus ahead: children near roadway. Slow down, keep distance.
+  t= 114 ms  EVT 14  [DANGER] STOP! Child in critical zone at 109 cm (conf 79%, risk 70). Do not move the bus!
+             EVT 14  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 14.
+  t= 123 ms  EVT 15  [DANGER] STOP! Child in critical zone at 60 cm (conf 89%, risk 70). Do not move the bus!
+             EVT 15  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 15.
+  t= 132 ms  EVT 16  [DANGER] STOP! Child in critical zone at 27 cm (conf 91%, risk 74). Do not move the bus!
+             EVT 16  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 16.
+  t= 141 ms  EVT 17  [DANGER] STOP! Child in critical zone at 26 cm (conf 97%, risk 76). Do not move the bus!
+             EVT 17  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 17.
+  t= 167 ms  EVT 20  [DANGER] STOP! Child in critical zone at 71 cm (conf 41%, risk 70). Do not move the bus!
+             EVT 20  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 20.
+  t= 176 ms  EVT 21  [DANGER] STOP! Child in critical zone at 191 cm (conf 53%, risk 70). Do not move the bus!
+             EVT 21  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 21.
+  t= 185 ms  EVT 22  [DANGER] STOP! Child in critical zone at 177 cm (conf 55%, risk 70). Do not move the bus!
+             EVT 22  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 22.
+  t= 194 ms  EVT 23  [DANGER] STOP! Child in critical zone at 160 cm (conf 62%, risk 70). Do not move the bus!
+             EVT 23  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 23.
+  t= 203 ms  EVT 24  [DANGER] STOP! Child in critical zone at 167 cm (conf 65%, risk 70). Do not move the bus!
+             EVT 24  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 24.
+  t= 212 ms  EVT 25  [DANGER] STOP! Child in critical zone at 143 cm (conf 72%, risk 70). Do not move the bus!
+             EVT 25  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 25.
+  t= 221 ms  EVT 26  [DANGER] STOP! Child in critical zone at 166 cm (conf 65%, risk 70). Do not move the bus!
+             EVT 26  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 26.
+  t= 230 ms  EVT 30  [DANGER] STOP! Child in critical zone at 214 cm (conf 46%, risk 70). Do not move the bus!
+             EVT 30  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 30.
+  t= 239 ms  EVT 31  [DANGER] STOP! Child in critical zone at 181 cm (conf 49%, risk 70). Do not move the bus!
+             EVT 31  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 31.
+  t= 248 ms  EVT 32  [DANGER] STOP! Child in critical zone at 139 cm (conf 73%, risk 70). Do not move the bus!
+             EVT 32  [V2V-EMERGENCY] School bus: CHILD ON ROADWAY. STOP IMMEDIATELY. Event 32.
+  t= 254 ms  EVT 29  [CAUTION] Child detected 253 cm from bus (conf 47%, risk 35). Reduce speed, prepare to stop.
+             EVT 29  [V2V-WARNING] School bus ahead: children near roadway. Slow down, keep distance.
+  t= 289 ms  EVT 38  [CAUTION] Child detected 250 cm from bus (conf 46%, risk 42). Reduce speed, prepare to stop.
+             EVT 38  [V2V-WARNING] School bus ahead: children near roadway. Slow down, keep distance.
+  t= 296 ms  EVT 39  [CAUTION] Child detected 228 cm from bus (conf 47%, risk 45). Reduce speed, prepare to stop.
+             EVT 39  [V2V-WARNING] School bus ahead: children near roadway. Slow down, keep distance.
+
+[LOG SAFETY-AWARE] records=40 | driver alerts: info=12 caution=6 danger=22 | V2V broadcasts=28 | deadlines met=40 missed=0 | avg latency=17.07 ms
+
+---- STAGE 3: SCHEDULER COMPARISON (40 events) ----
+Policy             AvgAll   AvgCrit   AvgWarn  MaxCrit MissCrit  MissAll  Makespan   AvgWait
+FIFO                15.65     19.05      9.83       33        0        0       296      8.90
+FIXED-PRIORITY      15.12     19.86      7.33       67        1        1       296      8.38
+SAFETY-AWARE        17.07     17.41     12.33       33        0        0       296     10.32
+(latencies in ms of simulated time)
+Critical-event latency vs FIFO, FIXED-PRIORITY: +4.3%
+Critical-event latency vs FIFO, SAFETY-AWARE  : -8.6%
+
+RESULT,FIFO,40,15.65,19.05,33,0,0,296
+RESULT,FIXED-PRIORITY,40,15.12,19.86,67,1,1,296
+RESULT,SAFETY-AWARE,40,17.07,17.41,33,0,0,296
+
+Simulation complete.
+Exiting @ tick 3610434000 because exiting with last active thread context

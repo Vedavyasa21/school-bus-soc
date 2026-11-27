@@ -233,25 +233,38 @@ s24 = sw[sw.seed == 2024]
 fig, (b1, b2) = plt.subplots(1, 2, figsize=(7.4, 3.0), gridspec_kw={"width_ratios": [1.35, 1.0]})
 pol_list = ["FIFO", "FIXED-SENSOR", "SAFETY-AWARE", "ZONE-FIFO", "P-EDF"]
 pol_labs = ["FIFO", "Fixed", "Safety-\nAware", "Zone-\nFIFO", "P-EDF"]
+r0_s24 = s24[(s24.load == 400) & (s24.policy == "FIFO")].iloc[0]
+crit_n_24 = int(r0_s24.crit_n)
+warn_n_24 = int(r0_s24.warn_n)
+rho_400_24 = float(r0_s24.rho)
 crit400 = [s24[(s24.load == 400) & (s24.policy == p)].iloc[0].crit_miss for p in pol_list]
 warn400 = [s24[(s24.load == 400) & (s24.policy == p)].iloc[0].warn_miss for p in pol_list]
 xi = np.arange(len(pol_list))
 w = 0.34
-r1 = b1.bar(xi - w/2, crit400, w, color="#C0392B", edgecolor="#222", lw=0.5, label="Critical misses (of 21)")
-r2 = b1.bar(xi + w/2, warn400, w, color="#E08A2B", edgecolor="#222", lw=0.5, label="Warning misses (of 7)")
+r1 = b1.bar(xi - w/2, crit400, w, color="#C0392B", edgecolor="#222", lw=0.5, label=f"Critical misses (of {crit_n_24})")
+r2 = b1.bar(xi + w/2, warn400, w, color="#E08A2B", edgecolor="#222", lw=0.5, label=f"Warning misses (of {warn_n_24})")
 for bar in list(r1) + list(r2):
     h = bar.get_height()
     b1.text(bar.get_x() + bar.get_width()/2, h + 0.35, f"{int(h)}", ha="center", va="bottom", fontsize=7.2)
 b1.set_xticks(xi)
 b1.set_xticklabels(pol_labs, fontsize=7.6)
-b1.set_ylim(0, 20.5)
+b1.set_ylim(0, max(crit400) + 7.5)
 b1.set_ylabel("Missed deadlines (seed 2024)", fontsize=8.4)
-b1.set_title("(a) Seed 2024 400% overload misses (rho = 3.71)", fontsize=8.7, fontweight="bold")
+b1.set_title(f"(a) Seed 2024 400% overload misses (rho = {rho_400_24:.2f})", fontsize=8.7, fontweight="bold")
 b1.legend(fontsize=7.3, frameon=False, loc="upper left")
 b1.grid(axis="y", ls=":", alpha=0.35)
 b1.set_axisbelow(True)
 for sp in ("top", "right"):
     b1.spines[sp].set_visible(False)
+
+def _stat_c(name, pat):
+    txt = open(GEM5_R + name + "/stats.txt", encoding="utf-8", errors="ignore").read()
+    last = txt.split("---------- Begin Simulation Statistics ----------")[-1]
+    return int(re.search(pat, last).group(1))
+
+_v1_c = _stat_c("demo_timing", r"system\.cpu\.numCycles\s+(\d+)")
+_q1_c = _stat_c("demo_quiet100", r"system\.cpu\.numCycles\s+(\d+)")
+_s4_c = _stat_c("demo_stress", r"system\.cpu\.numCycles\s+(\d+)")
 
 b2.axis("off")
 b2.set_title("(b) gem5 RISC-V SE Configuration", fontsize=8.7, fontweight="bold")
@@ -264,9 +277,9 @@ cfg_txt = (
     "L1 Caches  : 32 KiB I / 32 KiB D (4-way, 2 cyc)\n"
     "L2 Cache   : 256 KiB shared (8-way, 20 cyc)\n"
     "Memory     : 512 MiB DDR3-1600\n"
-    "Exit Tick  : 3,617,562,000 (verbose 100%)\n"
-    "             1,299,929,000 (quiet 100%)\n"
-    "             1,379,783,000 (quiet 400%)"
+    f"Exit Tick  : {_v1_c*1000:,} (verbose 100%)\n"
+    f"             {_q1_c*1000:,} (quiet 100%)\n"
+    f"             {_s4_c*1000:,} (quiet 400%)"
 )
 b2.add_patch(FancyBboxPatch((0.04, 0.05), 0.92, 0.88, boxstyle="round,pad=0.025,rounding_size=0.035",
                             fc="#F7F9FC", ec="#445", lw=0.9, transform=b2.transAxes))
@@ -287,15 +300,27 @@ demo_v1_c = load_stat_val("demo_timing", r"system\.cpu\.numCycles\s+(\d+)")
 demo_q1_c = load_stat_val("demo_quiet100", r"system\.cpu\.numCycles\s+(\d+)")
 demo_s4_c = load_stat_val("demo_stress", r"system\.cpu\.numCycles\s+(\d+)")
 
+def parse_prof_stdout(name):
+    txt = open(GEM5_R + name + "/stdout.txt", encoding="utf-8", errors="ignore").read()
+    order = ["SensorInput", "SensorFusion", "DangerDetect", "FIFO", "FIXED-PRIORITY", "SAFETY-AWARE", "WarningGen"]
+    cyc_us = []
+    for stg in order:
+        m = re.search(rf"^{re.escape(stg)}\s+(\d+)\s+(\d+)\s+[0-9.]+\s+([0-9.]+)", txt, re.M)
+        cyc_us.append(int(m.group(1)) / 1000.0)
+    mt = re.search(r"^TOTAL_COMPUTE\s+(\d+)\s+\d+\s+[0-9.]+\s+([0-9.]+)\s+([0-9.]+)", txt, re.M)
+    me = re.search(r"Exiting @ tick (\d+)", txt)
+    return cyc_us, float(mt.group(2)), float(mt.group(3)), int(me.group(1)) // 1000
+
 stages = ["SensorIn", "Fusion", "Danger", "FIFO", "Fixed", "Safety", "Warning"]
-tim_c = [19.180, 11.017, 18.676, 69.313, 62.279, 63.074, 212.977]
-min_c = [6.433,   4.639,  8.439, 42.142, 36.074, 36.654,  89.833]
+tim_c, tim_tot_us, tim_ipc, prof_exit_c = parse_prof_stdout("prof_timing")
+min_c, min_tot_us, min_ipc, _           = parse_prof_stdout("prof_minor")
+prof_printf_c = load_stat_val("prof_timing", r"system\.cpu\.numCycles\s+(\d+)")
 
 fig, (p1, p2) = plt.subplots(1, 2, figsize=(7.4, 3.2), gridspec_kw={"width_ratios": [1.3, 1.0]})
 xi = np.arange(len(stages))
 w = 0.36
-p1.bar(xi - w/2, tim_c, w, color="#3B69A8", edgecolor="#222", lw=0.45, label="TimingSimple (456.5 µs, IPC 0.301)")
-p1.bar(xi + w/2, min_c, w, color="#2E8B57", edgecolor="#222", lw=0.45, label="MinorCPU (224.2 µs, IPC 0.614)")
+p1.bar(xi - w/2, tim_c, w, color="#3B69A8", edgecolor="#222", lw=0.45, label=f"TimingSimple ({tim_tot_us:.1f} µs, IPC {tim_ipc:.3f})")
+p1.bar(xi + w/2, min_c, w, color="#2E8B57", edgecolor="#222", lw=0.45, label=f"MinorCPU ({min_tot_us:.1f} µs, IPC {min_ipc:.3f})")
 p1.set_xticks(xi)
 p1.set_xticklabels(stages, fontsize=7.2)
 p1.set_ylabel("Simulated compute time (µs @ 1 GHz)", fontsize=8.2)
@@ -306,14 +331,19 @@ p1.set_axisbelow(True)
 
 # Panel (b): Stacked full-run reconciliation in millions of cycles
 runs = ["prof_timing\n(m5ops)", "Quiet 100%\n(main)", "Quiet 400%\n(main)", "Verbose 100%\n(main)"]
-comp_m = np.array([0.457, 0.457, 0.536, 0.457])       # ~compute (400% adds +79.9k queue cycles)
-rt_m   = np.array([0.291, 0.843, 0.844, 0.843])       # glibc startup/exit + non-verbose summary/warmup
-verb_m = np.array([0.453, 0.000, 0.000, 2.318])       # prof 11-line table (0.453M) vs main 190-line trace (2.318M)
+c_m = tim_tot_us / 1000.0
+q4_delta = (demo_s4_c - demo_q1_c) / 1e6
+v1_delta = (demo_v1_c - demo_q1_c) / 1e6
+p_pr_m = prof_printf_c / 1e6
+p_init_m = (prof_exit_c / 1e6) - c_m - p_pr_m
+comp_m = np.array([c_m, c_m, c_m + q4_delta, c_m])
+rt_m   = np.array([p_init_m, demo_q1_c/1e6 - c_m, demo_s4_c/1e6 - (c_m + q4_delta), demo_q1_c/1e6 - c_m])
+verb_m = np.array([p_pr_m, 0.000, 0.000, v1_delta])
 xr = np.arange(len(runs))
 p2.bar(xr, comp_m, 0.52, color="#2E8B57", edgecolor="#222", lw=0.45, label="Compute / queue logic")
 p2.bar(xr, rt_m,   0.52, bottom=comp_m, color="#95A5A6", edgecolor="#222", lw=0.45, label="Summary I/O + glibc runtime")
 p2.bar(xr, verb_m, 0.52, bottom=comp_m+rt_m, color="#D9822B", edgecolor="#222", lw=0.45, label="11-line (prof) / 190-line verbose")
-tots = [1.201, demo_q1_c/1e6, demo_s4_c/1e6, demo_v1_c/1e6]
+tots = [prof_exit_c/1e6, demo_q1_c/1e6, demo_s4_c/1e6, demo_v1_c/1e6]
 for i, tv in enumerate(tots):
     p2.text(i, tv + 0.07, f"{tv:.2f}M", ha="center", va="bottom", fontsize=7.4, fontweight="bold")
 p2.set_xticks(xr)
