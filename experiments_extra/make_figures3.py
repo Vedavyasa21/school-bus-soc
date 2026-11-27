@@ -44,14 +44,14 @@ fp_rows = s[(s.det == "YES") & (s.tru == "no") & (s.scene == "NOISE")]
 if len(fp_rows):
     r0 = fp_rows.iloc[0]
     ax.annotate("Event 20: NOISE FP\n(dist 71 cm, conf 41)",
-                xy=(r0.id, r0.conf + 1), xytext=(22.2, 108),
+                xy=(r0.id, r0.conf + 1), xytext=(11.2, 109),
                 fontsize=7.6, bbox=box, arrowprops=dict(arrowstyle="->", lw=0.9, color="#222"))
 
 fn_rows = s[(s.det == "no") & (s.tru == "YES")]
 if len(fn_rows):
     r1 = fn_rows.iloc[-1]
     ax.annotate(f"Event {int(r1.id)}: missed child FN\n({int(r1.dist)} cm, conf {int(r1.conf)})",
-                xy=(r1.id, r1.conf + 1), xytext=(30.0, 95),
+                xy=(r1.id, r1.conf + 1), xytext=(28.8, 92),
                 fontsize=7.6, bbox=box, arrowprops=dict(arrowstyle="->", lw=0.9, color="#222"))
 
 ax.set_xlabel("Event ID (seed 2024)", fontsize=8.8)
@@ -188,12 +188,12 @@ ax1.axhline(300, color="#D9822B", ls="--", lw=1.0, label="Warning limit (300 cm)
 ax1.annotate("Ev.20 NOISE FP", xy=(20, 71), xytext=(4.0, 20), fontsize=7.0,
              bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="#8E44AD", lw=0.5),
              arrowprops=dict(arrowstyle="->", lw=0.7, color="#8E44AD"))
-ax1.annotate("Ev.28/37 FN", xy=(28, 285), xytext=(29.5, 355), fontsize=7.0,
+ax1.annotate("Ev.28/37 FN", xy=(28, 285), xytext=(28.5, 428), fontsize=7.0,
              bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="#222", lw=0.5),
              arrowprops=dict(arrowstyle="->", lw=0.7, color="#222"))
 ax1.set_xlabel("Event ID (seed 2024)", fontsize=8.4)
 ax1.set_ylabel("Estimated distance (cm)", fontsize=8.4)
-ax1.set_title("(a) Seed 2024 classification & errors", fontsize=8.8, fontweight="bold")
+ax1.set_title("(b) Seed 2024 classification & errors", fontsize=8.8, fontweight="bold")
 ax1.set_ylim(0, 520)
 ax1.tick_params(labelsize=7.5)
 ax1.legend(fontsize=6.6, ncol=2, frameon=False, loc="upper left")
@@ -214,7 +214,7 @@ ax2.bar(xi, fp_c, bottom=np.array(tp_c)+np.array(fn_c)+np.array(tn_c), color="#8
 ax2.set_xticks(xi)
 ax2.set_xticklabels(short_sc, fontsize=7.5)
 ax2.set_ylabel("Frames (n = 4,000, 100 seeds)", fontsize=8.4)
-ax2.set_title("(b) Detection outcomes by scene", fontsize=8.8, fontweight="bold")
+ax2.set_title("(c) Detection outcomes by scene", fontsize=8.8, fontweight="bold")
 ax2.tick_params(labelsize=7.5)
 ax2.legend(fontsize=6.8, frameon=False, loc="upper right")
 ax2.grid(axis="y", ls=":", alpha=0.35)
@@ -439,5 +439,32 @@ for (x0, y0, x1, y1, lbl, lx, ly) in [
     if lbl:
         ax.text(lx, ly, lbl, ha="center", va="center", fontsize=6.4)
 save(fig, "fig_danger_flow.png")
+
+# gem5 Platform Architecture Diagram (KiB/MiB consistent with Table 8 & Fig. 9b)
+fig, ax = plt.subplots(figsize=(3.6, 4.85))
+ax.set_xlim(0, 100); ax.set_ylim(0, 146); ax.axis("off")
+def gbox(x, y, w, h, t, fc):
+    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.4,rounding_size=1.2", fc=fc, ec="#222", lw=0.9))
+    ax.text(x + w/2, y + h/2, t, ha="center", va="center", fontsize=6.6, linespacing=1.35)
+def garr(x0, y0, x1, y1):
+    ax.add_patch(FancyArrowPatch((x0, y0), (x1, y1), arrowstyle="-|>", mutation_scale=8.5, lw=1.0, color="#222"))
+
+gbox(12, 129, 76, 12, "Static RISC-V binary\n(rv64gc, lp64d)", "#E2E6EC")
+gbox(12, 105, 76, 13, "CPU model, 1 GHz\nTimingSimple / Minor (O3 optional)", "#DCE6F5")
+gbox(4,  78,  41, 15, "L1 I-cache\n32 KiB, 4-way", "#DDEFD9")
+gbox(55, 78,  41, 15, "L1 D-cache\n32 KiB, 4-way", "#DDEFD9")
+gbox(12, 54,  76, 11, "L2 bus (crossbar)", "#F2EFE4")
+gbox(18, 30,  64, 13, "L2 cache\n256 KiB, 8-way", "#DDEFD9")
+gbox(12, 16,  76,  8, "System bus (crossbar)", "#F2EFE4")
+gbox(12,  1,  76,  9, "Memory controller\nDDR3-1600, 512 MiB", "#FCEBC2")
+garr(50, 128.5, 50, 118.5)
+garr(34, 104.5, 25,  93.5)
+garr(66, 104.5, 75,  93.5)
+garr(25,  77.5, 36,  65.5)
+garr(75,  77.5, 64,  65.5)
+garr(50,  53.5, 50,  43.5)
+garr(50,  29.5, 50,  24.5)
+garr(50,  15.5, 50,  10.5)
+save(fig, "fig_gem5_arch.png")
 
 print("All publication figures generated cleanly.")
