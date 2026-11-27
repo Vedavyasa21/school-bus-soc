@@ -9,8 +9,8 @@ gem5 is copyrighted software; use the --copyright option for details.
 
 gem5 version 25.1.0.1
 gem5 compiled Nov 22 2026 07:57:15
-gem5 started Nov 27 2026 08:27:00
-gem5 executing on Beast, pid 429
+gem5 started Nov 27 2026 14:41:58
+gem5 executing on Beast, pid 550
 command line: /home/vedavyasa/gem5/build/RISCV/gem5.opt --outdir=experiments/results/demo_stress configs/school_bus_soc.py --binary build/school_bus_soc --args '40 2024 0 400' --cpu-type timing
 
 info: Standard input is not a terminal, disabling listeners.
@@ -69,4 +69,4 @@ RESULT,FIXED-PRIORITY,40,113.85,105.36,205,15,16,271
 RESULT,SAFETY-AWARE,40,130.80,75.64,141,16,22,271
 
 Simulation complete.
-Exiting @ tick 1379454000 because exiting with last active thread context
+Exiting @ tick 1412074000 because exiting with last active thread context

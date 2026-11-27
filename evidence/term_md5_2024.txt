@@ -1,4 +1,7 @@
-vedavyasa@Beast:~/school_bus_soc/experiments_extra$ md5sum results/sweep.csv results/det.csv results/sensitivity.csv
-c81e9b5057819dd02f97f3300ffcde55  results/sweep.csv
+$ cd ~/school_bus_soc/experiments_extra && md5sum results/*.csv
+29aff614915fff4e6ebff6b3c159508b  results/sweep.csv
+5da8b11ac371991f4fed03437d112601  results/sweep_all.csv
 1035cad44bb9817ba1fa4be1132b7776  results/det.csv
-8b3423de1de73f176aa1136219edaa2f  results/sensitivity.csv
+d9e58dede65ae0fbb97d84b73ac69763  results/sensitivity.csv
+e3feb035ec456694c9250dace0eb4325  results/fusion_roc.csv
+d3fd0ed7b045ac2b7360de13c41a76e5  results/sensitivity_mc.csv

@@ -8,7 +8,7 @@ mkdir -p ../build results ../figures
 gcc -O2 -Wall -Wextra -I "$SRC" -o ../build/sweep       sweep.c       $MODS
 gcc -O2 -Wall -Wextra -I "$SRC" -o ../build/dump        dump.c        $MODS
 gcc -O2 -Wall -Wextra -I "$SRC" -o ../build/sensitivity sensitivity.c $SRC/sensor_input.c $SRC/sensor_fusion.c
-../build/sweep 40 100 > results/sweep.csv 2> results/det.csv
+../build/sweep
 ../build/dump results/frames.csv results/seed2024.csv
 ../build/sensitivity > results/sensitivity.csv
 PY=python3

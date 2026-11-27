@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define MAX_EVENTS          256
+#define MAX_EVENTS          1024
 #define US_MAX_RANGE_CM     400
 #define US_INVALID          0
 #define PROX_MAX_RANGE_CM   150

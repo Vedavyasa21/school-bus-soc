@@ -7,7 +7,6 @@
 
 #define CRITICAL_BASE_CM   100
 #define CRITICAL_DOOR_CM   150
-#define CRITICAL_MAX_CM    220
 #define WARNING_ZONE_CM    300
 
 typedef enum {

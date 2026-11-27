@@ -164,5 +164,22 @@ int main(int argc, char **argv)
            (double)total_cyc / (double)n,
            (double)total_cyc / 1000.0,
            total_cyc ? (double)total_ins / (double)total_cyc : 0.0);
+    {
+        uint64_t core_c = prof[0].cycles + prof[1].cycles + prof[2].cycles + prof[6].cycles;
+        uint64_t core_i = prof[0].insts  + prof[1].insts  + prof[2].insts  + prof[6].insts;
+        for (p = 0; p < (int)SCHED_POLICY_COUNT; p++) {
+            uint64_t sc = core_c + prof[3 + p].cycles;
+            uint64_t si = core_i + prof[3 + p].insts;
+            char sname[32];
+            snprintf(sname, sizeof(sname), "SINGLE_%s", prof[3 + p].name);
+            printf("%-22s %10llu %10llu %10.1f %10.3f %8.3f\n",
+                   sname,
+                   (unsigned long long)sc,
+                   (unsigned long long)si,
+                   (double)sc / (double)n,
+                   (double)sc / 1000.0,
+                   sc ? (double)si / (double)sc : 0.0);
+        }
+    }
     return 0;
 }

@@ -38,7 +38,6 @@ void danger_classify(const SensorFrame *f, const FusionResult *r, DangerResult *
     if (f->door_open || f->bus_speed_kmh > 0) {
         crit_cm = CRITICAL_BASE_CM + d_stop_cm;
         if (crit_cm < CRITICAL_DOOR_CM) crit_cm = CRITICAL_DOOR_CM;
-        if (crit_cm > CRITICAL_MAX_CM)  crit_cm = CRITICAL_MAX_CM;
     }
 
     if (dist <= crit_cm) {

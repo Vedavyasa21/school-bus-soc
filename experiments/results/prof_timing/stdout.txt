@@ -9,8 +9,8 @@ gem5 is copyrighted software; use the --copyright option for details.
 
 gem5 version 25.1.0.1
 gem5 compiled Nov 22 2026 07:57:15
-gem5 started Nov 27 2026 08:27:01
-gem5 executing on Beast, pid 430
+gem5 started Nov 27 2026 14:41:59
+gem5 executing on Beast, pid 551
 command line: /home/vedavyasa/gem5/build/RISCV/gem5.opt --outdir=experiments/results/prof_timing configs/school_bus_soc.py --binary build/school_bus_soc_prof --args '40 2024' --cpu-type timing
 
 info: Standard input is not a terminal, disabling listeners.
@@ -36,13 +36,16 @@ src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
  gem5 Per-Stage Compute Profile (n=40, seed=2024, 1 GHz ref clock)
 ======================================================================
 Stage                Cycles      Insts    Cyc/Evt   Time(us)      IPC
-SensorInput           19180       6607      479.5     19.180    0.344
-SensorFusion          11017       3735      275.4     11.017    0.339
-DangerDetect          18682       4489      467.1     18.682    0.240
-FIFO                  67570      20752     1689.2     67.570    0.307
-FIXED-PRIORITY        60749      20776     1518.7     60.749    0.342
-SAFETY-AWARE          61528      21287     1538.2     61.528    0.346
-WarningGen           214805      58826     5370.1    214.805    0.274
+SensorInput           19174       6607      479.4     19.174    0.345
+SensorFusion          11013       3735      275.3     11.013    0.339
+DangerDetect          16716       4412      417.9     16.716    0.264
+FIFO                  77535      20767     1938.4     77.535    0.268
+FIXED-PRIORITY        69125      20791     1728.1     69.125    0.301
+SAFETY-AWARE          71564      21302     1789.1     71.564    0.298
+WarningGen           214818      58826     5370.4    214.818    0.274
 ----------------------------------------------------------------------
-TOTAL_COMPUTE        453531     136472    11338.3    453.531    0.301
-Exiting @ tick 1197563000 because exiting with last active thread context
+TOTAL_COMPUTE        479945     136440    11998.6    479.945    0.284
+SINGLE_FIFO                339256      94347     8481.4    339.256    0.278
+SINGLE_FIXED-PRIORITY      330846      94371     8271.1    330.846    0.285
+SINGLE_SAFETY-AWARE        333285      94882     8332.1    333.285    0.285
+Exiting @ tick 1297896000 because exiting with last active thread context
