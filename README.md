@@ -16,7 +16,7 @@ This repository contains the complete C controller model, gem5 RISC-V platform c
 
 1. **Sensor Input (`sensor_input.c/.h`)**: Generates deterministic xorshift-seeded synthetic multi-sensor streams (ultrasonic `0–400 cm` with `3%` dropout, short-range proximity `3–150 cm`, motion `0–100`, door state, and vehicle speed `km/h`) across six scenarios (`IDLE 25%`, `APPROACH 25%`, `CROSSING 12%`, `STANDING 12%`, `OBSTACLE 14%`, `NOISE 12%`).
 2. **Sensor Fusion (`sensor_fusion.c/.h`)**: Computes a normalized weighted score `conf = (us_s*w_us + pr_s*w_pr + mo_s*w_mo) / (w_us + w_pr + w_mo)` (`35/25/40` baseline, clamped `[0, 100]`) with cross-sensor disagreement penalties and dual short-range confirmation (`both_close = us_echo && prox_echo && dist <= 200`) to detect stationary/crouching children.
-3. **Danger-Zone Classification (`danger_detection.c/.h`)**: Applies a `300 cm` warning threshold and integer kinematic stopping-distance critical threshold (`crit_cm = clamp(100 + d_stop(v), 150, 220)` cm when `door_open` or `bus_speed_kmh > 0`, with `tau = 0.4 s`, `a = 5.0 m/s^2`).
+3. **Danger-Zone Classification (`danger_detection.c/.h`)**: Applies a `300 cm` warning threshold and integer kinematic stopping-distance critical threshold (`d_stop = floor(4*v_cms/10) + floor(v_cms^2/1000)`, `crit_cm = clamp(100 + d_stop, 150, 220)` cm when `door_open` or `bus_speed_kmh > 0`, with `tau = 0.4 s`, `a = 5.0 m/s^2 = 500 cm/s^2`).
 4. **Priority Scheduling (`priority_scheduler.c/.h` & `experiments_extra/sweep.c`)**: Compares `FIFO`, `FIXED-SENSOR`, `SAFETY-AWARE` (`zone * 1000 + risk` with safe-to-warning aging at `250 ms`), `ZONE-FIFO`, `EDF`, `P-ZONE-FIFO`, and `P-EDF` under `3/6/9 ms` service times and `300/100/40 ms` deadlines.
 5. **Driver & V2X Warnings (`warning_system.c/.h`)**: Generates `[INFO]`, `[CAUTION]`, and `[DANGER]` cabin alerts and V2V text logs.
 6. **Per-Stage gem5 Profiler (`profile_stages.c`)**: Isolates each stage without console formatting distortion using RISC-V `rdcycle`/`rdinstret` CSRs and `m5_reset_stats`/`m5_dump_stats` (`libm5.a`).
@@ -52,23 +52,24 @@ python3 experiments/run_experiments.py --gem5 ~/gem5/build/RISCV/gem5.opt --demo
 
 | Paper Artifact | Generator / Source | Raw Data / Archived Evidence |
 |---|---|---|
-| **Tables 1–8** | Static model parameters (`src/*.h`, `configs/school_bus_soc.py`) | `src/sensor_input.h`, `sensor_fusion.h`, `danger_detection.h`, `priority_scheduler.h` |
-| **Table 9 & Fig. 5** | `experiments_extra/dump.c`, `make_figures3.py` | `experiments_extra/results/det.csv`, `frames.csv`, `seed2024.csv`, `evidence/` |
+| **Tables 1–8 & Figs. 1–4** | Static model parameters & diagrams (`src/*.h`, `configs/school_bus_soc.py`, `make_figures3.py`) | `src/sensor_input.h`, `sensor_fusion.h`, `danger_detection.h`, `priority_scheduler.h`, `figures/fig_gem5_arch.png` |
+| **Fig. 5 (gem5 banner)** | `experiments/run_experiments.py --demo` | `evidence/raw_01_gem5_config_banner.png` |
+| **Table 9 & Fig. 6** | `experiments_extra/dump.c`, `make_figures3.py` | `experiments_extra/results/det.csv`, `frames.csv`, `seed2024.csv`, `evidence/term_stage1_2024.png` |
+| **Fig. 7 (Seed 2024 Conf.)** | `experiments_extra/make_figures3.py` | `experiments_extra/results/seed2024.csv`, `figures/fig_confidence40.png` |
 | **Table 10 (Sensitivity)** | `experiments_extra/sensitivity.c` | `experiments_extra/results/sensitivity.csv` |
-| **Fig. 6 (Seed 2024 Conf.)** | `experiments_extra/make_figures3.py` | `experiments_extra/results/seed2024.csv` |
-| **Tables 11–12 & Figs. 7–8** | `experiments_extra/sweep.c`, `make_tables.py`, `make_figures3.py` | `experiments_extra/results/sweep.csv`, `tables.json`, `demo_timing/stats.txt` |
-| **Tables 13–16 & Figs. 9–10** | `experiments_extra/sweep.c`, `analyze.py`, `calc_stats.py`, `make_tables.py` | `experiments_extra/results/sweep.csv`, `summary.csv`, `analysis_printout.txt` |
+| **Tables 11–12 & Figs. 8–9** | `experiments_extra/sweep.c`, `make_tables.py`, `make_figures3.py` | `experiments_extra/results/sweep.csv`, `tables.json`, `demo_timing/stats.txt`, `evidence/term_stage3_2024.png` |
+| **Tables 13–16 & Figs. 10–11** | `experiments_extra/sweep.c`, `analyze.py`, `calc_stats.py`, `make_tables.py` | `experiments_extra/results/sweep.csv`, `summary.csv`, `analysis_printout.txt` |
 | **Table 17 (Full-run gem5)** | `src/main.c`, `configs/school_bus_soc.py` | `experiments/results/{demo_timing,demo_quiet100,demo_stress}/stats.txt` |
-| **Table 18 & Fig. 11** | `src/profile_stages.c`, `make_figures3.py` | `experiments/results/{prof_timing,prof_minor}/stats.txt`, `evidence/` |
+| **Table 18 & Fig. 12** | `src/profile_stages.c`, `make_figures3.py` | `experiments/results/{prof_timing,prof_minor}/{stats.txt,stdout.txt}`, `evidence/term_prof_2024.png`, `evidence/term_md5_2024.png` |
 
-Raw unedited terminal captures of the RISC-V gem5 runs and deterministic MD5 verification outputs are preserved in [`evidence/`](evidence/).
+Archived terminal captures and deterministic MD5 verification outputs are stored in [`evidence/`](evidence/).
 
 ---
 
 ## Deterministic Output Checksums (`run_all.sh`)
 
 ```text
-3ec3f0abeb386a57ebd6124c14b09af2  experiments_extra/results/sweep.csv
+c81e9b5057819dd02f97f3300ffcde55  experiments_extra/results/sweep.csv
 1035cad44bb9817ba1fa4be1132b7776  experiments_extra/results/det.csv
 8b3423de1de73f176aa1136219edaa2f  experiments_extra/results/sensitivity.csv
 ```
